@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.board">
+	
+	<insert id="insertBoard" parameterType="boardVo">
+		<selectKey	keyProperty="boardSeq" resultType="int" order="BEFORE">
+			select board_seq.nextval from dual
+		</selectKey>
+		insert into tck_board(board_seq, title, board_contents, writer, regdate, hits, pwd)
+		values(#{boardSeq}, #{title}, #{boardContents}, #{writer}, sysdate, 0, #{pwd})
+	</insert>
+	
+	<select id="selectBoard" resultType="boardVo">
+		select * from tck_board
+		where del_flag is null
+		order by board_seq
+	</select>
+	
+	<select id="selectByBoardSeq" parameterType="int" resultType="boardVo">
+		select * from tck_board
+		where board_seq=#{boardSeq} and	del_flag is null	
+	</select>
+	
+	<update id="updateDelflag" parameterType="int">
+		update tck_board
+		set del_date=sysdate,
+            del_flag='y'				
+		where board_seq=#{boardSeq}		
+	</update>
+	
+	<update id="updateHits" parameterType="int">
+  	 	update tck_board
+  	 	set hits=hits+1
+  	 	where board_seq=#{boardSeq}
+  	</update>
+  	
+  	<update id="updateBoard" parameterType="boardVo">
+  		update tck_board
+		set regdate=sysdate,
+            board_contents=#{boardContents}		
+		where board_seq=#{boardSeq}		
+  	</update>	
+</mapper>
+
+
+
+
+
+
+
+
+
